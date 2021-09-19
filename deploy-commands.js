@@ -8,7 +8,7 @@ const commands = [
 	new SlashCommandBuilder().setName('server').setDescription('Replies with server info!'),
 	new SlashCommandBuilder().setName('user').setDescription('Replies with user info!'),
 	new SlashCommandBuilder().setName('hello').setDescription('Replies with world!'),
-	new SlashCommandBuilder().setName('dj').setDescription(' '),
+	new SlashCommandBuilder().setName('dj').setDescription('Coloque o link de uma musica'),
 ]
 	.map(command => command.toJSON());
 
