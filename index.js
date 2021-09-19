@@ -1,5 +1,6 @@
 // Require the necessary discord.js classes
 const { Client, Intents } = require('discord.js');
+const ytdl = require('ytdl-core');
 // eslint-disable-next-line no-unused-vars
 const { token, prefix } = require('./config.json');
 
@@ -125,9 +126,18 @@ function play(guild, song) {
 		return;
 	}
 
-	
-}
+	const dispatcher = serverQueue.connection
+		.play(ytdl(song.url))
+		.on('finish', () => {
+			serverQueue.songs.shift();
+			play(guild, serverQueue.songs[0]);
+		})
+		.on('error', error => console.error(error));
+	dispatcher.setVolumeLogarithmic(serverQueue.volume / 5);
+	serverQueue.textChannel.send(`Música seguinte: **${song.title}**`);
 
+
+}
 
 
 // Login to Discord with your client's token
