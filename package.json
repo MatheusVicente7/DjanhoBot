@@ -13,10 +13,12 @@
     "@discordjs/builders": "",
     "@discordjs/opus": "^0.6.0",
     "@discordjs/rest": "^0.1.0-canary.0",
+    "@discordjs/voice": "^0.6.0",
     "discord-api-types": "^0.23.1",
-    "discord.js": "",
+    "discord.js": "12.4",
     "dotenv": "",
     "ffmpeg": "^0.0.4",
+    "ffmpeg-static": "^4.4.0",
     "fluent-ffmpeg": "^2.1.2",
     "ytdl-core": "^4.9.1"
   },
