@@ -35,16 +35,28 @@ client.on('message', async message => {
 		execute(message, serverQueue);
 		return;
 	}
-	if (message.content.startsWith('dj')) {
-		execute(message, serverQueue);
+	else if (message.content.startsWith(`${prefix}skip`)) {
+		skip(message, serverQueue);
 		return;
 	}
-	else if (message.content.startsWith(`${prefix}skip`)) {
+	else if (message.content.startsWith(`${prefix}pular`)) {
 		skip(message, serverQueue);
 		return;
 	}
 	else if (message.content.startsWith(`${prefix}stop`)) {
 		stop(message, serverQueue);
+		return;
+	}
+	else if (message.content.startsWith(`${prefix}parar`)) {
+		stop(message, serverQueue);
+		return;
+	}
+	else if (message.content.startsWith(`${prefix}help`)) {
+		message.channel.send('!play ou !dj para tocar uma música; \n!skip ou !pular para tocar a próxima música;\n!stop ou !parar para parar de tocar uma música;');
+		return;
+	}
+	else if (message.content.startsWith(`${prefix}comandos`)) {
+		message.channel.send('!play ou !dj para tocar uma música; \n!skip ou !pular para tocar a próxima música;\n!stop ou !parar para parar de tocar uma música;');
 		return;
 	}
 	else {
