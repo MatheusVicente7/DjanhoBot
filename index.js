@@ -36,7 +36,6 @@ client.on('interactionCreate', async interaction => {
 client.on('message', async message => {
 	if (message.author.bot) return;
 	if (!message.content.startsWith(prefix)) return;
-	// eslint-disable-next-line no-undef
 	const serverQueue = queue.get(message.guild.id);
 
 	if (message.content.startsWith(`${prefix}play`)) {
@@ -58,6 +57,78 @@ client.on('message', async message => {
 		message.channel.send('You need to enter a valid command!');
 	}
 });
+
+const queue = new Map();
+
+async function execute(message, serverQueue) {
+	const args = message.content.split(' ');
+
+	const voiceChannel = message.member.voice.channel;
+
+	if (!voiceChannel) {
+		return message.channel.send(
+			'Você precisa estar em um Canal de Voz para escutar uma música!');
+	}
+	const permissions = voiceChannel.permissionsFor(message.client.user);
+	if (!permissions.has('CONNECT') || !permissions.has('SPEAK')) {
+		return message.channel.send(
+			'O Djanho precisa de permissão para entrar e falar em seu canal de voz');
+	}
+	// ytdl safes info video into a object
+	const songInfo = await ytdl.getInfo(args[1]);
+	const song = {
+		title: songInfo.videoDetails.title,
+		url: songInfo.videoDetails.video_url,
+	};
+
+	if (!serverQueue) {
+		// Creates a contract for the queue
+		const queueContract = {
+			textChannel : message.channel,
+			voiceChannel : voiceChannel,
+			connection : null,
+			songs : [],
+			volume: 5,
+			playing : true,
+		};
+		// Setting the queue using our contract
+		queue.set(message.guild.id, queueContract);
+
+		// Pushing the song to our songs array
+		queueContract.songs.push(song);
+
+		try {
+			const connection = await voiceChannel.join();
+			queueContract.connection = connection;
+
+			play(message.guild, queueContract.songs[0]);
+
+		}
+		catch (err) {
+			console.log(err);
+			queue.delete(message.guild.id);
+			return message.channel.send(err);
+		}
+	}
+	else {
+		serverQueue.songs.push(song);
+		console.log(serverQueue.songs);
+		return message.channel.send(`${song.title} foi adicionada a playlist`);
+	}
+}
+
+function play(guild, song) {
+	const serverQueue = queue.get(guild.id);
+	if (!song) {
+		serverQueue.voiceChannel.leave();
+		queue.delete(guild.id);
+		return;
+	}
+
+	
+}
+
+
 
 // Login to Discord with your client's token
 client.login(token);
