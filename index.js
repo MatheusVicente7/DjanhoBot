@@ -1,6 +1,7 @@
 // Require the necessary discord.js classes
 const { Client, Intents } = require('discord.js');
 const ytdl = require('ytdl-core');
+const ytSearch = require('yt-search');
 // eslint-disable-next-line no-unused-vars
 const { token, prefix } = require('./config.json');
 
@@ -65,8 +66,31 @@ client.on('message', async message => {
 });
 
 async function execute(message, serverQueue) {
-	const args = message.content.split(' ');
-
+	const args = message.content.split(/(?<=^\S+)\s/);console.log(args);
+	if (!args[1]) return message.channel.send('Presta atenção piá pançudo! Você precisa digitar o nome do vídeo ou o link!');
+	let song = {};
+	if (ytdl.validateURL(args[1])) {
+		const song_info = await ytdl.getInfo(args[1]);
+		song = {
+			title: song_info.videoDetails.title,
+			url: song_info.videoDetails.video_url,
+		};
+	}
+	else {
+		const video_finder = async (query) => {
+			const video_result = await ytSearch(query);
+			return (video_result.videos.length > 1) ? video_result.videos[0] : null;
+		};
+		const video = await video_finder(args[1]);
+		console.log(video);
+		console.log(args[1]);
+		if (video) {
+			song = { title: video.title, url: video.url };
+		}
+		else {
+			message.channel.send('Desculpa, o Djanho foi incapaz de achar o vídeo do floquinho de neve! Tente novamente.');
+		}
+	}
 	const voiceChannel = message.member.voice.channel;
 	if (!voiceChannel) {
 		return message.channel.send(
@@ -80,11 +104,6 @@ async function execute(message, serverQueue) {
 		);
 	}
 
-	const songInfo = await ytdl.getInfo(args[1]);
-	const song = {
-		title: songInfo.videoDetails.title,
-		url: songInfo.videoDetails.video_url,
-	};
 
 	if (!serverQueue) {
 		const queueContruct = {
