@@ -56,6 +56,10 @@ client.on('message', async message => {
 		message.channel.send('!play ou !dj para tocar uma música; \n!skip ou !pular para tocar a próxima música;\n!stop ou !parar para parar de tocar uma música;');
 		return;
 	}
+	else if (message.content.startsWith(`${prefix}repo`)) {
+		message.channel.send('https://github.com/MatheusVicente7/DjanhoBot');
+		return;
+	}
 	else if (message.content.startsWith(`${prefix}comandos`)) {
 		message.channel.send('!play ou !dj para tocar uma música; \n!skip ou !pular para tocar a próxima música;\n!stop ou !parar para parar de tocar uma música;');
 		return;
