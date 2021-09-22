@@ -12,6 +12,7 @@ const queue = new Map();
 
 client.once('ready', () => {
 	console.log('Ready!');
+
 });
 
 client.once('reconnecting', () => {
@@ -21,6 +22,8 @@ client.once('reconnecting', () => {
 client.once('disconnect', () => {
 	console.log('Disconnect!');
 });
+// client.on('ready', () => {
+// });
 
 client.on('message', async message => {
 	if (message.author.bot) return;
@@ -179,6 +182,14 @@ function play(guild, song) {
 			play(guild, serverQueue.songs[0]);
 		})
 		.on('error', error => console.error(error));
+	console.log(song);
+	client.user.setPresence({
+		activity: {
+			name: `${song.title}`,
+			type: 'LISTENING',
+		},
+		status: 'idle',
+	});
 	dispatcher.setVolumeLogarithmic(serverQueue.volume / 5);
 	serverQueue.textChannel.send(`Música: **${song.title}**`);
 }
