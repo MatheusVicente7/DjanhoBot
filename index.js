@@ -151,7 +151,7 @@ function skip(message, serverQueue) {
 		);
 	}
 	if (!serverQueue) {return message.channel.send('Não tem música tocando no momento');}
-	serverQueue.connection.dispatcher.end();
+	// serverQueue.connection.dispatcher.end();
 }
 
 function stop(message, serverQueue) {
